@@ -109,6 +109,14 @@
           <%= form.label :city %>
           <%= form.text_field :city %>
         </div>
+        <div class="field">
+          <%= form.label :customer_occupation, "Customer Occupation" %>
+          <%= form.text_field :customer_occupation %>
+        </div>
+        <div class="field">
+          <%= form.label :company_name, "Company Name" %>
+          <%= form.text_field :company_name %>
+        </div>
         <div class="field field-notes">
           <%= form.label :address %>
           <%= form.text_area :address, rows: 3 %>
@@ -139,6 +147,22 @@
         <div class="field">
           <%= form.label :budget_range %>
           <%= form.text_field :budget_range %>
+        </div>
+        <div class="field">
+          <%= form.label :purchase_type, "Purchase Type" %>
+          <%= form.text_field :purchase_type %>
+        </div>
+        <div class="field">
+          <%= form.label :is_exchange, "Is Exchange?" %>
+          <%= form.select :is_exchange, [["Yes", true], ["No", false]] %>
+        </div>
+        <div class="field">
+          <%= form.label :competition_car, "Competition Car" %>
+          <%= form.text_field :competition_car %>
+        </div>
+        <div class="field">
+          <%= form.label :finance_status, "Finance Status" %>
+          <%= form.text_field :finance_status %>
         </div>
       </div>
     </div>

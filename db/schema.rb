@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_05_131500) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_05_135500) do
   create_table "activities", force: :cascade do |t|
     t.integer "lead_id", null: false
     t.integer "user_id"
@@ -118,6 +118,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_05_131500) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state"
+    t.string "customer_occupation"
+    t.string "company_name"
+    t.string "purchase_type"
+    t.boolean "is_exchange", default: false, null: false
+    t.string "competition_car"
+    t.string "finance_status"
     t.index ["assigned_cre_id"], name: "index_leads_on_assigned_cre_id"
     t.index ["assigned_sales_exec_id"], name: "index_leads_on_assigned_sales_exec_id"
     t.index ["current_stage_id"], name: "index_leads_on_current_stage_id"

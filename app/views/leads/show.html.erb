@@ -60,6 +60,14 @@
         <div class="value"><%= @lead.address.presence || "—" %></div>
       </div>
       <div>
+        <span class="label">Customer Occupation</span>
+        <div class="value"><%= @lead.customer_occupation.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Company Name</span>
+        <div class="value"><%= @lead.company_name.presence || "—" %></div>
+      </div>
+      <div>
         <span class="label">Interested Model</span>
         <div class="value"><%= @lead.interested_model.presence || "—" %></div>
       </div>
@@ -78,6 +86,22 @@
       <div>
         <span class="label">Budget Range</span>
         <div class="value"><%= @lead.budget_range.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Purchase Type</span>
+        <div class="value"><%= @lead.purchase_type.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Is Exchange?</span>
+        <div class="value"><%= @lead.is_exchange? ? "Yes" : "No" %></div>
+      </div>
+      <div>
+        <span class="label">Competition Car</span>
+        <div class="value"><%= @lead.competition_car.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Finance Status</span>
+        <div class="value"><%= @lead.finance_status.presence || "—" %></div>
       </div>
       <div class="detail-notes">
         <span class="label">Notes</span>
