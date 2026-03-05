@@ -1,0 +1,230 @@
+<% content_for :title, "Leads" %>
+<% content_for :container_class, "container-wide-leads" %>
+
+<div class="page-header">
+  <div>
+    <h1>Leads</h1>
+    <p class="page-subtitle">Track every customer inquiry from first contact to delivery.</p>
+  </div>
+  <div>
+    <%= link_to "New Lead", new_lead_path, class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="card section">
+  <%= form_with url: leads_path, method: :get, class: "form" do |form| %>
+    <div class="form-grid">
+      <div class="field">
+        <%= form.label :stage_id, "Stage" %>
+        <%= form.collection_select :stage_id, @stages, :id, :name, { include_blank: "All", selected: params[:stage_id] } %>
+      </div>
+      <div class="field">
+        <%= form.label :source, "Source" %>
+        <%= form.select :source, @sources.map { |s| [s.titleize, s] }, { include_blank: "All", selected: params[:source] } %>
+      </div>
+      <div class="field">
+        <%= form.label :assigned_id, "Assigned" %>
+        <%= form.collection_select :assigned_id, @assignees, :id, :name, { include_blank: "All", selected: params[:assigned_id] } %>
+      </div>
+      <div class="field">
+        <%= form.label :model, "Model" %>
+        <%= form.select :model, @models.map { |model| [model, model] }, { include_blank: "All", selected: params[:model] } %>
+      </div>
+      <div class="field">
+        <%= form.label :created_date, "Created Date" %>
+        <%= form.date_field :created_date, value: params[:created_date] %>
+      </div>
+    </div>
+    <div class="form-actions button-row">
+      <%= form.submit "Apply Filters", class: "btn btn-secondary" %>
+      <%= link_to "Clear", leads_path, class: "btn btn-ghost" %>
+    </div>
+  <% end %>
+</div>
+
+<div data-controller="lead-panel bulk-assign" data-action="keydown.esc@window->lead-panel#close keydown.esc@window->bulk-assign#close">
+  <div class="card leads-table-card">
+    <div class="bulk-toolbar">
+      <div class="button-row">
+        <button type="button" class="btn btn-ghost" data-action="bulk-assign#selectAllRows">Select all</button>
+        <button type="button" class="btn btn-ghost" data-action="bulk-assign#clearSelection">Clear</button>
+      </div>
+      <button type="button" class="btn btn-secondary" data-action="bulk-assign#openModal">Bulk Update Sales Rep</button>
+    </div>
+
+    <table class="table leads-table">
+      <thead>
+        <tr>
+          <th class="selection-col">
+            <input type="checkbox" data-bulk-assign-target="masterCheckbox" data-action="change->bulk-assign#toggleAll">
+          </th>
+          <th><%= leads_sort_link("Lead", "lead") %></th>
+          <th><%= leads_sort_link("Contact", "contact") %></th>
+          <th><%= leads_sort_link("Cr. Date", "created_date") %></th>
+          <th><%= leads_sort_link("DSC", "days_since_created") %></th>
+          <th><%= leads_sort_link("Up. Date", "updated_date") %></th>
+          <th><%= leads_sort_link("DSU", "days_since_updated") %></th>
+          <th><%= leads_sort_link("Model", "model") %></th>
+          <th><%= leads_sort_link("Stage", "stage") %></th>
+          <th><%= leads_sort_link("Source", "source") %></th>
+          <th><%= leads_sort_link("Assigned", "assigned") %></th>
+          <th class="table-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @leads.each do |lead| %>
+          <% created_date = lead.created_at&.to_date %>
+          <% updated_date = lead.updated_at&.to_date %>
+          <tr>
+            <td class="selection-col">
+              <input type="checkbox" value="<%= lead.id %>" data-bulk-assign-target="rowCheckbox" data-action="change->bulk-assign#syncSelection">
+            </td>
+            <td>
+              <button
+                type="button"
+                class="lead-inline-trigger"
+                data-action="click->lead-panel#open"
+                data-lead-name="<%= lead.customer_name %>"
+                data-lead-mobile="<%= lead.mobile_number %>"
+                data-lead-email="<%= lead.email.to_s %>"
+                data-activity-url="<%= lead_activities_path(lead) %>"
+                data-follow-up-url="<%= lead_follow_ups_path(lead) %>"
+              >
+                <strong><%= lead.customer_name %></strong>
+                <div class="muted">ID: <%= lead.lead_number.presence || lead.id %></div>
+              </button>
+            </td>
+            <td>
+              <div class="mono"><%= lead.mobile_number %></div>
+              <div class="muted"><%= lead.email.presence || "—" %></div>
+            </td>
+            <td><%= created_date ? created_date.strftime("%d %b %Y") : "—" %></td>
+            <td><%= created_date ? (Date.current - created_date).to_i : "—" %></td>
+            <td><%= updated_date ? updated_date.strftime("%d %b %Y") : "—" %></td>
+            <td><%= updated_date ? (Date.current - updated_date).to_i : "—" %></td>
+            <td><%= lead.interested_model.presence || "—" %></td>
+            <td class="stage-inline-cell" data-controller="inline-stage">
+              <button type="button" class="stage-inline-trigger" data-inline-stage-target="trigger" data-action="click->inline-stage#open">
+                <span class="status-badge stage-<%= lead.current_stage&.name.to_s.parameterize %>">
+                  <%= lead.current_stage&.name %>
+                </span>
+              </button>
+              <%= form_with model: lead, url: lead_path(lead), method: :patch, class: "stage-inline-form", hidden: true, data: { inline_stage_target: "form" } do |form| %>
+                <%= hidden_field_tag :from_list, "1" %>
+                <%= form.collection_select :current_stage_id, @stages, :id, :name, {}, {
+                  class: "stage-inline-select",
+                  data: { inline_stage_target: "select", action: "change->inline-stage#save blur->inline-stage#close keydown.esc->inline-stage#close" }
+                } %>
+              <% end %>
+            </td>
+            <td><%= lead.source&.titleize || "—" %></td>
+            <td>
+              <div><%= lead.assigned_cre&.name || "—" %></div>
+              <div class="muted"><%= lead.assigned_sales_exec&.name || "" %></div>
+            </td>
+            <td class="table-actions">
+              <div class="actions-inline">
+                <%= link_to "View", lead_path(lead), class: "btn btn-ghost" %>
+                <%= link_to "Edit", edit_lead_path(lead), class: "btn btn-ghost" %>
+                <%= link_to "Delete", lead_path(lead), class: "btn btn-ghost btn-danger", data: { turbo_method: :delete, turbo_confirm: "Remove this lead?" } %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bulk-modal-backdrop" hidden data-bulk-assign-target="backdrop" data-action="click->bulk-assign#close"></div>
+
+  <div class="bulk-modal" hidden data-bulk-assign-target="modal">
+    <h3>Bulk Update Sales Rep</h3>
+    <p class="muted" data-bulk-assign-target="selectedCount">0 leads selected</p>
+
+    <%= form_with url: bulk_update_sales_exec_leads_path, method: :patch, class: "form", data: { bulk_assign_target: "form", action: "submit->bulk-assign#syncBeforeSubmit" } do |form| %>
+      <%= hidden_field_tag :lead_ids_csv, "", data: { bulk_assign_target: "leadIdsField" } %>
+      <div class="field">
+        <%= form.label :assigned_sales_exec_id, "Sales Rep" %>
+        <%= form.collection_select :assigned_sales_exec_id, @assignees, :id, :name, include_blank: "Unassigned" %>
+      </div>
+      <div class="button-row form-actions">
+        <button type="button" class="btn btn-ghost" data-action="bulk-assign#close">Cancel</button>
+        <%= form.submit "Confirm Update", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="lead-panel-backdrop" hidden data-lead-panel-target="backdrop" data-action="click->lead-panel#close"></div>
+
+  <aside class="lead-side-panel" hidden data-lead-panel-target="panel">
+    <div class="lead-side-panel-head">
+      <div>
+        <h2 data-lead-panel-target="name">Lead</h2>
+        <p class="page-subtitle" data-lead-panel-target="meta"></p>
+      </div>
+      <button type="button" class="btn btn-ghost" data-action="click->lead-panel#close">Close</button>
+    </div>
+
+    <div class="stack">
+      <div class="subsection">
+        <h3>Log Activity</h3>
+        <%= form_with url: "#", method: :post, scope: :activity, class: "form", data: { lead_panel_target: "activityForm" } do |form| %>
+          <%= hidden_field_tag :from_list, "1" %>
+          <div class="form-grid">
+            <div class="field">
+              <%= form.label :kind %>
+              <%= form.select :kind, Activity::KINDS.map { |k| [k.titleize, k] } %>
+            </div>
+            <div class="field">
+              <%= form.label :occurred_at %>
+              <%= form.datetime_local_field :occurred_at, value: Time.zone.now.change(sec: 0).strftime("%Y-%m-%dT%H:%M") %>
+            </div>
+            <div class="field">
+              <%= form.label :user_id, "Logged by" %>
+              <%= form.collection_select :user_id, @assignees, :id, :name, include_blank: "Unassigned" %>
+            </div>
+            <div class="field">
+              <%= form.label :duration_seconds, "Duration (sec)" %>
+              <%= form.number_field :duration_seconds, min: 0 %>
+            </div>
+            <div class="field field-notes">
+              <%= form.label :notes %>
+              <%= form.text_area :notes, rows: 3 %>
+            </div>
+          </div>
+          <div class="form-actions">
+            <%= form.submit "Log Activity", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="subsection">
+        <h3>Schedule Follow-up</h3>
+        <%= form_with url: "#", method: :post, scope: :follow_up, class: "form", data: { lead_panel_target: "followUpForm" } do |form| %>
+          <%= hidden_field_tag :from_list, "1" %>
+          <div class="form-grid">
+            <div class="field">
+              <%= form.label :due_on %>
+              <%= form.date_field :due_on, value: Date.current %>
+            </div>
+            <div class="field">
+              <%= form.label :status %>
+              <%= form.select :status, FollowUp::STATUSES.map { |s| [s.titleize, s] } %>
+            </div>
+            <div class="field">
+              <%= form.label :user_id, "Assigned to" %>
+              <%= form.collection_select :user_id, @assignees, :id, :name, include_blank: "Unassigned" %>
+            </div>
+            <div class="field field-notes">
+              <%= form.label :notes %>
+              <%= form.text_area :notes, rows: 3 %>
+            </div>
+          </div>
+          <div class="form-actions">
+            <%= form.submit "Create Follow-up", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </aside>
+</div>

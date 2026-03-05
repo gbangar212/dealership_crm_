@@ -1,0 +1,263 @@
+<% content_for :title, @lead.customer_name %>
+
+<div class="page-header">
+  <div>
+    <h1><%= @lead.customer_name %></h1>
+    <p class="page-subtitle">
+      <span class="mono"><%= @lead.mobile_number %></span>
+      <% if @lead.email.present? %>
+        · <%= @lead.email %>
+      <% end %>
+    </p>
+  </div>
+  <div class="button-row">
+    <button type="button" class="btn btn-secondary">Call Lead</button>
+    <button type="button" class="btn btn-secondary">Whatsapp Lead</button>
+    <%= link_to "Back to leads", leads_path, class: "btn btn-secondary" %>
+    <%= link_to "Edit lead", edit_lead_path(@lead), class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="card section">
+  <div class="lead-summary">
+    <div>
+      <span class="label">Stage</span>
+      <div class="value"><span class="status-badge"><%= @lead.current_stage&.name %></span></div>
+    </div>
+    <div>
+      <span class="label">Source</span>
+      <div class="value"><%= @lead.source&.titleize || "—" %></div>
+    </div>
+    <div>
+      <span class="label">Assigned CRE</span>
+      <div class="value"><%= @lead.assigned_cre&.name || "—" %></div>
+    </div>
+    <div>
+      <span class="label">Assigned Sales</span>
+      <div class="value"><%= @lead.assigned_sales_exec&.name || "—" %></div>
+    </div>
+    <div>
+      <span class="label">Temperature</span>
+      <div class="value"><%= @lead.temperature&.titleize || "—" %></div>
+    </div>
+    <div>
+      <span class="label">Next Follow-up</span>
+      <div class="value"><%= @lead.next_follow_up_on || "—" %></div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card section">
+    <h2>Customer & Vehicle</h2>
+    <div class="detail-grid">
+      <div>
+        <span class="label">City</span>
+        <div class="value"><%= @lead.city.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Address</span>
+        <div class="value"><%= @lead.address.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Interested Model</span>
+        <div class="value"><%= @lead.interested_model.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Variant</span>
+        <div class="value"><%= @lead.variant.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Fuel Type</span>
+        <div class="value"><%= @lead.fuel_type.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Color Preference</span>
+        <div class="value"><%= @lead.color_preference.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Budget Range</span>
+        <div class="value"><%= @lead.budget_range.presence || "—" %></div>
+      </div>
+      <div class="detail-notes">
+        <span class="label">Notes</span>
+        <div class="value"><%= @lead.notes.presence || "—" %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h2>Booking & Timing</h2>
+    <div class="detail-grid">
+      <div>
+        <span class="label">Expected Purchase</span>
+        <div class="value"><%= @lead.expected_purchase_on || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Booking Amount</span>
+        <div class="value"><%= @lead.booking_amount || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Booking Date</span>
+        <div class="value"><%= @lead.booking_date || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Payment Mode</span>
+        <div class="value"><%= @lead.payment_mode.presence || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Delivery Date</span>
+        <div class="value"><%= @lead.delivery_date || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Last Call</span>
+        <div class="value"><%= @lead.last_call_at || "—" %></div>
+      </div>
+      <div>
+        <span class="label">Last WhatsApp</span>
+        <div class="value"><%= @lead.last_whatsapp_at || "—" %></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card section">
+    <h2>Stage Update</h2>
+    <%= form_with model: [@lead, @stage_transition], class: "form" do |form| %>
+      <div class="form-grid">
+        <div class="field">
+          <%= form.label :to_stage_id, "Move to stage" %>
+          <%= form.collection_select :to_stage_id, LeadStage.order(:position), :id, :name %>
+        </div>
+        <div class="field">
+          <%= form.label :user_id, "Updated by" %>
+          <%= form.collection_select :user_id, User.order(:last_name), :id, :name, include_blank: "Unassigned" %>
+        </div>
+        <div class="field field-notes">
+          <%= form.label :notes %>
+          <%= form.text_area :notes, rows: 3 %>
+        </div>
+      </div>
+      <div class="form-actions">
+        <%= form.submit "Update Stage", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+
+    <div class="timeline">
+      <h3>Stage History</h3>
+      <% @stage_transitions.each do |transition| %>
+        <div class="timeline-item">
+          <div class="timeline-title">
+            <strong><%= transition.to_stage&.name %></strong>
+            <span class="muted">from <%= transition.from_stage&.name || "—" %></span>
+          </div>
+          <div class="muted"><%= transition.created_at.to_date %> · <%= transition.user&.name || "System" %></div>
+          <% if transition.notes.present? %>
+            <div><%= transition.notes %></div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h2>Activity & Follow-ups</h2>
+
+    <div class="stack">
+      <div class="subsection">
+        <h3>Log Activity</h3>
+        <%= form_with model: [@lead, @activity], class: "form" do |form| %>
+          <div class="form-grid">
+            <div class="field">
+              <%= form.label :kind %>
+              <%= form.select :kind, Activity::KINDS.map { |k| [k.titleize, k] } %>
+            </div>
+            <div class="field">
+              <%= form.label :occurred_at %>
+              <%= form.datetime_local_field :occurred_at %>
+            </div>
+            <div class="field">
+              <%= form.label :user_id, "Logged by" %>
+              <%= form.collection_select :user_id, User.order(:last_name), :id, :name, include_blank: "Unassigned" %>
+            </div>
+            <div class="field">
+              <%= form.label :duration_seconds, "Duration (sec)" %>
+              <%= form.number_field :duration_seconds, min: 0 %>
+            </div>
+            <div class="field field-notes">
+              <%= form.label :notes %>
+              <%= form.text_area :notes, rows: 3 %>
+            </div>
+          </div>
+          <div class="form-actions">
+            <%= form.submit "Log Activity", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="subsection">
+        <h3>Schedule Follow-up</h3>
+        <%= form_with model: [@lead, @follow_up], class: "form" do |form| %>
+          <div class="form-grid">
+            <div class="field">
+              <%= form.label :due_on %>
+              <%= form.date_field :due_on %>
+            </div>
+            <div class="field">
+              <%= form.label :status %>
+              <%= form.select :status, FollowUp::STATUSES.map { |s| [s.titleize, s] } %>
+            </div>
+            <div class="field">
+              <%= form.label :user_id, "Assigned to" %>
+              <%= form.collection_select :user_id, User.order(:last_name), :id, :name, include_blank: "Unassigned" %>
+            </div>
+            <div class="field field-notes">
+              <%= form.label :notes %>
+              <%= form.text_area :notes, rows: 3 %>
+            </div>
+          </div>
+          <div class="form-actions">
+            <%= form.submit "Create Follow-up", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>Recent Activities</h3>
+      <% @activities.each do |activity| %>
+        <div class="timeline-item">
+          <div class="timeline-title">
+            <strong><%= activity.kind.titleize %></strong>
+            <span class="muted">· <%= activity.occurred_at.to_date %></span>
+          </div>
+          <div class="muted"><%= activity.user&.name || "Unassigned" %></div>
+          <% if activity.notes.present? %>
+            <div><%= activity.notes %></div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="subsection">
+      <h3>Upcoming Follow-ups</h3>
+      <% @follow_ups.each do |follow_up| %>
+        <div class="timeline-item">
+          <div class="timeline-title">
+            <strong><%= follow_up.due_on %></strong>
+            <span class="muted">· <%= follow_up.status.titleize %></span>
+          </div>
+          <div class="muted"><%= follow_up.user&.name || "Unassigned" %></div>
+          <% if follow_up.notes.present? %>
+            <div><%= follow_up.notes %></div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="page-footer">
+  <%= link_to "Delete lead", lead_path(@lead), class: "btn btn-ghost btn-danger", data: { turbo_method: :delete, turbo_confirm: "Remove this lead?" } %>
+</div>

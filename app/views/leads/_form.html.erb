@@ -1,0 +1,208 @@
+<%= form_with model: lead, class: "form" do |form| %>
+  <% if lead.errors.any? %>
+    <div class="flash flash-alert">
+      <strong><%= pluralize(lead.errors.count, "error") %> prevented this lead from saving:</strong>
+      <ul class="error-list">
+        <% lead.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if lead.new_record? %>
+    <div class="section">
+      <h2>Lead Details</h2>
+      <p class="muted">Capture the basic details. Additional information can be updated from Edit Lead.</p>
+      <div class="form-grid">
+        <div class="field">
+          <%= form.label :customer_name, "Name" %>
+          <%= form.text_field :customer_name, required: true %>
+        </div>
+        <div class="field">
+          <%= form.label :mobile_number, "Mobile number" %>
+          <%= form.text_field :mobile_number, required: true %>
+        </div>
+        <div class="field">
+          <%= form.label :interested_model, "Model" %>
+          <%= form.text_field :interested_model %>
+        </div>
+        <div class="field">
+          <%= form.label :state, "State" %>
+          <%= form.text_field :state %>
+        </div>
+        <div class="field">
+          <%= form.label :city, "City" %>
+          <%= form.text_field :city %>
+        </div>
+        <div class="field">
+          <%= form.label :assigned_sales_exec_id, "Sales Exec name" %>
+          <%= form.collection_select :assigned_sales_exec_id, User.order(:last_name), :id, :name, include_blank: "Unassigned" %>
+        </div>
+        <div class="field field-notes">
+          <%= form.label :notes, "Remarks" %>
+          <%= form.text_area :notes, rows: 4 %>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class="section">
+      <h2>Lead Details</h2>
+      <p class="muted">Capture the basic lead identifiers and assignment.</p>
+      <div class="form-grid">
+        <div class="field">
+          <%= form.label :lead_number, "Lead ID" %>
+          <%= form.text_field :lead_number %>
+        </div>
+        <div class="field">
+          <%= form.label :source %>
+          <%= form.select :source, Lead::SOURCES.map { |s| [s.titleize, s] }, include_blank: "Select" %>
+        </div>
+        <div class="field">
+          <%= form.label :sub_source %>
+          <%= form.text_field :sub_source %>
+        </div>
+        <div class="field">
+          <%= form.label :campaign_name %>
+          <%= form.text_field :campaign_name %>
+        </div>
+        <div class="field">
+          <%= form.label :current_stage_id, "Stage" %>
+          <%= form.collection_select :current_stage_id, LeadStage.order(:position), :id, :name %>
+        </div>
+        <div class="field">
+          <%= form.label :assigned_cre_id, "Assigned CRE" %>
+          <%= form.collection_select :assigned_cre_id, User.order(:last_name), :id, :name, include_blank: "Unassigned" %>
+        </div>
+        <div class="field">
+          <%= form.label :assigned_sales_exec_id, "Assigned Sales Exec" %>
+          <%= form.collection_select :assigned_sales_exec_id, User.order(:last_name), :id, :name, include_blank: "Unassigned" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Customer</h2>
+      <p class="muted">Core customer contact details.</p>
+      <div class="form-grid">
+        <div class="field">
+          <%= form.label :customer_name %>
+          <%= form.text_field :customer_name, required: true %>
+        </div>
+        <div class="field">
+          <%= form.label :mobile_number %>
+          <%= form.text_field :mobile_number, required: true %>
+        </div>
+        <div class="field">
+          <%= form.label :alternate_number %>
+          <%= form.text_field :alternate_number %>
+        </div>
+        <div class="field">
+          <%= form.label :email %>
+          <%= form.email_field :email %>
+        </div>
+        <div class="field">
+          <%= form.label :state %>
+          <%= form.text_field :state %>
+        </div>
+        <div class="field">
+          <%= form.label :city %>
+          <%= form.text_field :city %>
+        </div>
+        <div class="field field-notes">
+          <%= form.label :address %>
+          <%= form.text_area :address, rows: 3 %>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Vehicle Interest</h2>
+      <p class="muted">What the customer is looking for.</p>
+      <div class="form-grid">
+        <div class="field">
+          <%= form.label :interested_model %>
+          <%= form.text_field :interested_model %>
+        </div>
+        <div class="field">
+          <%= form.label :variant %>
+          <%= form.text_field :variant %>
+        </div>
+        <div class="field">
+          <%= form.label :fuel_type %>
+          <%= form.text_field :fuel_type %>
+        </div>
+        <div class="field">
+          <%= form.label :color_preference %>
+          <%= form.text_field :color_preference %>
+        </div>
+        <div class="field">
+          <%= form.label :budget_range %>
+          <%= form.text_field :budget_range %>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Status & Follow-up</h2>
+      <p class="muted">Lead temperature, score, and planned follow-up.</p>
+      <div class="form-grid">
+        <div class="field">
+          <%= form.label :lead_score %>
+          <%= form.number_field :lead_score, min: 0 %>
+        </div>
+        <div class="field">
+          <%= form.label :temperature %>
+          <%= form.select :temperature, Lead::TEMPERATURES.map { |t| [t.titleize, t] }, include_blank: "Select" %>
+        </div>
+        <div class="field">
+          <%= form.label :expected_purchase_on %>
+          <%= form.date_field :expected_purchase_on %>
+        </div>
+        <div class="field">
+          <%= form.label :next_follow_up_on %>
+          <%= form.date_field :next_follow_up_on %>
+        </div>
+        <div class="field">
+          <%= form.label :last_call_at %>
+          <%= form.datetime_local_field :last_call_at %>
+        </div>
+        <div class="field">
+          <%= form.label :last_whatsapp_at %>
+          <%= form.datetime_local_field :last_whatsapp_at %>
+        </div>
+        <div class="field field-notes">
+          <%= form.label :notes %>
+          <%= form.text_area :notes, rows: 4 %>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Booking</h2>
+      <p class="muted">Add booking details when confirmed.</p>
+      <div class="form-grid">
+        <div class="field">
+          <%= form.label :booking_amount %>
+          <%= form.number_field :booking_amount, step: 0.01 %>
+        </div>
+        <div class="field">
+          <%= form.label :booking_date %>
+          <%= form.date_field :booking_date %>
+        </div>
+        <div class="field">
+          <%= form.label :payment_mode %>
+          <%= form.text_field :payment_mode %>
+        </div>
+        <div class="field">
+          <%= form.label :delivery_date %>
+          <%= form.date_field :delivery_date %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

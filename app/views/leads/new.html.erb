@@ -1,0 +1,15 @@
+<% content_for :title, "New Lead" %>
+
+<div class="page-header">
+  <div>
+    <h1>New Lead</h1>
+    <p class="page-subtitle">Capture an inbound lead and start tracking engagement.</p>
+  </div>
+  <div>
+    <%= link_to "Back to leads", leads_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", lead: @lead %>
+</div>

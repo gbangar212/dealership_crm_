@@ -1,0 +1,15 @@
+<% content_for :title, "New User" %>
+
+<div class="page-header">
+  <div>
+    <h1>New User</h1>
+    <p class="page-subtitle">Add a team member to the CRM.</p>
+  </div>
+  <div>
+    <%= link_to "Back to users", users_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", user: @user %>
+</div>

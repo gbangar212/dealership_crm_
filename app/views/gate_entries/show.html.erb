@@ -1,0 +1,65 @@
+<% content_for :title, "Gate Entry" %>
+
+<div class="page-header">
+  <div>
+    <h1>Gate Entry</h1>
+    <p class="page-subtitle">Inbound vehicle detail record.</p>
+  </div>
+  <div class="button-row">
+    <%= link_to "Back to list", gate_entries_path, class: "btn btn-secondary" %>
+    <%= link_to "Edit", edit_gate_entry_path(@gate_entry), class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="card">
+  <div class="detail-grid">
+    <div>
+      <span class="label">Arrival date</span>
+      <div class="value"><%= @gate_entry.arrived_at %></div>
+    </div>
+    <div>
+      <span class="label">VIN</span>
+      <div class="value mono"><%= @gate_entry.vin %></div>
+    </div>
+    <div>
+      <span class="label">Make</span>
+      <div class="value"><%= @gate_entry.make %></div>
+    </div>
+    <div>
+      <span class="label">Model</span>
+      <div class="value"><%= @gate_entry.model %></div>
+    </div>
+    <div>
+      <span class="label">Year</span>
+      <div class="value"><%= @gate_entry.year %></div>
+    </div>
+    <div>
+      <span class="label">Color</span>
+      <div class="value"><%= @gate_entry.color.presence || "—" %></div>
+    </div>
+    <div>
+      <span class="label">Mileage</span>
+      <div class="value"><%= @gate_entry.mileage || "—" %></div>
+    </div>
+    <div>
+      <span class="label">Stock number</span>
+      <div class="value"><%= @gate_entry.stock_number.presence || "—" %></div>
+    </div>
+    <div>
+      <span class="label">Status</span>
+      <div class="value">
+        <span class="status-badge status-<%= @gate_entry.status %>">
+          <%= @gate_entry.status&.titleize %>
+        </span>
+      </div>
+    </div>
+    <div class="detail-notes">
+      <span class="label">Notes</span>
+      <div class="value"><%= @gate_entry.notes.presence || "—" %></div>
+    </div>
+  </div>
+</div>
+
+<div class="page-footer">
+  <%= link_to "Delete gate entry", gate_entry_path(@gate_entry), class: "btn btn-ghost btn-danger", data: { turbo_method: :delete, turbo_confirm: "Remove this gate entry?" } %>
+</div>

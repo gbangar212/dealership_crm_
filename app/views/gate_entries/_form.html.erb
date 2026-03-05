@@ -1,0 +1,68 @@
+<%= form_with model: gate_entry, class: "form" do |form| %>
+  <% if gate_entry.errors.any? %>
+    <div class="flash flash-alert">
+      <strong><%= pluralize(gate_entry.errors.count, "error") %> prevented this gate entry from saving:</strong>
+      <ul class="error-list">
+        <% gate_entry.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-grid">
+    <div class="field">
+      <%= form.label :vin %>
+      <%= form.text_field :vin, required: true %>
+    </div>
+
+    <div class="field">
+      <%= form.label :make %>
+      <%= form.text_field :make, required: true %>
+    </div>
+
+    <div class="field">
+      <%= form.label :model %>
+      <%= form.text_field :model, required: true %>
+    </div>
+
+    <div class="field">
+      <%= form.label :year %>
+      <%= form.number_field :year, required: true, min: 1901 %>
+    </div>
+
+    <div class="field">
+      <%= form.label :color %>
+      <%= form.text_field :color %>
+    </div>
+
+    <div class="field">
+      <%= form.label :mileage %>
+      <%= form.number_field :mileage, min: 0 %>
+    </div>
+
+    <div class="field">
+      <%= form.label :arrived_at, "Arrival date" %>
+      <%= form.date_field :arrived_at, required: true %>
+    </div>
+
+    <div class="field">
+      <%= form.label :stock_number %>
+      <%= form.text_field :stock_number %>
+    </div>
+
+    <div class="field">
+      <%= form.label :status %>
+      <%= form.select :status, GateEntry::STATUSES.map { |status| [status.titleize, status] } %>
+    </div>
+
+    <div class="field field-notes">
+      <%= form.label :notes %>
+      <%= form.text_area :notes, rows: 4 %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

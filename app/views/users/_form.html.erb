@@ -1,0 +1,35 @@
+<%= form_with model: user, class: "form" do |form| %>
+  <% if user.errors.any? %>
+    <div class="flash flash-alert">
+      <strong><%= pluralize(user.errors.count, "error") %> prevented this user from saving:</strong>
+      <ul class="error-list">
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-grid">
+    <div class="field">
+      <%= form.label :first_name %>
+      <%= form.text_field :first_name, required: true %>
+    </div>
+    <div class="field">
+      <%= form.label :last_name %>
+      <%= form.text_field :last_name, required: true %>
+    </div>
+    <div class="field">
+      <%= form.label :email %>
+      <%= form.email_field :email, required: true %>
+    </div>
+    <div class="field">
+      <%= form.label :role_id, "Role" %>
+      <%= form.collection_select :role_id, Role.order(:name), :id, :name %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

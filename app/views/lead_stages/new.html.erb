@@ -1,0 +1,15 @@
+<% content_for :title, "New Stage" %>
+
+<div class="page-header">
+  <div>
+    <h1>New Stage</h1>
+    <p class="page-subtitle">Add a new pipeline stage.</p>
+  </div>
+  <div>
+    <%= link_to "Back to stages", lead_stages_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", lead_stage: @lead_stage %>
+</div>

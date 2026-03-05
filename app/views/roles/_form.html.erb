@@ -1,0 +1,23 @@
+<%= form_with model: role, class: "form" do |form| %>
+  <% if role.errors.any? %>
+    <div class="flash flash-alert">
+      <strong><%= pluralize(role.errors.count, "error") %> prevented this role from saving:</strong>
+      <ul class="error-list">
+        <% role.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-grid">
+    <div class="field">
+      <%= form.label :name %>
+      <%= form.text_field :name, required: true %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

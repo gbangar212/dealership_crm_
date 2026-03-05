@@ -1,0 +1,31 @@
+<%= form_with model: lead_stage, class: "form" do |form| %>
+  <% if lead_stage.errors.any? %>
+    <div class="flash flash-alert">
+      <strong><%= pluralize(lead_stage.errors.count, "error") %> prevented this stage from saving:</strong>
+      <ul class="error-list">
+        <% lead_stage.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-grid">
+    <div class="field">
+      <%= form.label :name %>
+      <%= form.text_field :name, required: true %>
+    </div>
+    <div class="field">
+      <%= form.label :position %>
+      <%= form.number_field :position, min: 0 %>
+    </div>
+    <div class="field">
+      <%= form.label :active %>
+      <%= form.select :active, [["Active", true], ["Inactive", false]] %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

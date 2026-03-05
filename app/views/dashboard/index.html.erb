@@ -1,0 +1,91 @@
+<% content_for :title, "Dashboard" %>
+
+<div class="page-header">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="page-subtitle">A quick pulse on lead volume, pipeline health, and follow-ups.</p>
+  </div>
+  <div>
+    <%= link_to "View Leads", leads_path, class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="metrics-grid">
+  <div class="metric-card">
+    <span class="label">Total Leads</span>
+    <div class="stat-value"><%= @total_leads %></div>
+    <div class="muted">All time</div>
+  </div>
+  <div class="metric-card">
+    <span class="label">Active Pipeline</span>
+    <div class="stat-value"><%= @active_count %></div>
+    <div class="muted">Excludes lost/duplicate/delivered</div>
+  </div>
+  <div class="metric-card">
+    <span class="label">Lost Leads</span>
+    <div class="stat-value"><%= @lost_count %></div>
+    <div class="muted">Requires attention</div>
+  </div>
+  <div class="metric-card">
+    <span class="label">Delivered</span>
+    <div class="stat-value"><%= @delivered_count %></div>
+    <div class="muted">Conversion rate <%= @conversion_rate %>%</div>
+  </div>
+  <div class="metric-card">
+    <span class="label">New This Week</span>
+    <div class="stat-value"><%= @new_this_week %></div>
+    <div class="muted">This week</div>
+  </div>
+  <div class="metric-card">
+    <span class="label">Follow-ups Due</span>
+    <div class="stat-value"><%= @follow_ups_due_week %></div>
+    <div class="muted"><%= @overdue_follow_ups %> overdue</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card section">
+    <h2>Leads by Stage</h2>
+    <div class="bar-list">
+      <% @stage_stats.each do |name, count| %>
+        <div class="bar-row">
+          <div class="bar-label"><%= name %></div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width: <%= (count.to_f / @stage_max * 100).round(1) %>%"></div>
+          </div>
+          <div class="bar-value"><%= count %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h2>Leads by Source</h2>
+    <div class="bar-list">
+      <% @source_stats.each do |source, count| %>
+        <div class="bar-row">
+          <div class="bar-label"><%= source.to_s.titleize %></div>
+          <div class="bar-track">
+            <div class="bar-fill alt" style="width: <%= (count.to_f / @source_max * 100).round(1) %>%"></div>
+          </div>
+          <div class="bar-value"><%= count %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="card section">
+  <h2>Follow-ups Due (Next 7 Days)</h2>
+  <div class="bar-list">
+    <% @follow_up_stats.each do |date, count| %>
+      <div class="bar-row">
+        <div class="bar-label"><%= date.strftime("%a, %b %-d") %></div>
+        <div class="bar-track">
+          <div class="bar-fill accent" style="width: <%= (count.to_f / @follow_up_max * 100).round(1) %>%"></div>
+        </div>
+        <div class="bar-value"><%= count %></div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<% content_for :title, "Edit User" %>
+
+<div class="page-header">
+  <div>
+    <h1>Edit User</h1>
+    <p class="page-subtitle">Update team member details.</p>
+  </div>
+  <div>
+    <%= link_to "Back to users", users_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", user: @user %>
+</div>

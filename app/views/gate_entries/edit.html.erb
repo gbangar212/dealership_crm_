@@ -1,0 +1,15 @@
+<% content_for :title, "Edit Gate Entry" %>
+
+<div class="page-header">
+  <div>
+    <h1>Edit Gate Entry</h1>
+    <p class="page-subtitle">Update gate arrival details.</p>
+  </div>
+  <div>
+    <%= link_to "Back to list", gate_entries_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", gate_entry: @gate_entry %>
+</div>

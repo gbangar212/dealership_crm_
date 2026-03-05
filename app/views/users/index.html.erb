@@ -1,0 +1,37 @@
+<% content_for :title, "Users" %>
+
+<div class="page-header">
+  <div>
+    <h1>Users</h1>
+    <p class="page-subtitle">Manage who can access the CRM.</p>
+  </div>
+  <div>
+    <%= link_to "New User", new_user_path, class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th class="table-actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td><strong><%= user.name %></strong></td>
+          <td class="mono"><%= user.email %></td>
+          <td><%= user.role&.name %></td>
+          <td class="table-actions">
+            <%= link_to "Edit", edit_user_path(user), class: "btn btn-ghost" %>
+            <%= link_to "Delete", user_path(user), class: "btn btn-ghost btn-danger", data: { turbo_method: :delete, turbo_confirm: "Remove this user?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

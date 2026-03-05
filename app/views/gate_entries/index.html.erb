@@ -1,0 +1,48 @@
+<% content_for :title, "Gate Entries" %>
+
+<div class="page-header">
+  <div>
+    <h1>Gate Entries</h1>
+    <p class="page-subtitle">Track inbound vehicles from the moment they arrive on site.</p>
+  </div>
+  <div>
+    <%= link_to "New Gate Entry", new_gate_entry_path, class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Arrival</th>
+        <th>VIN</th>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Year</th>
+        <th>Status</th>
+        <th class="table-actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @gate_entries.each do |gate_entry| %>
+        <tr>
+          <td><%= gate_entry.arrived_at %></td>
+          <td class="mono"><%= gate_entry.vin %></td>
+          <td><%= gate_entry.make %></td>
+          <td><%= gate_entry.model %></td>
+          <td><%= gate_entry.year %></td>
+          <td>
+            <span class="status-badge status-<%= gate_entry.status %>">
+              <%= gate_entry.status&.titleize %>
+            </span>
+          </td>
+          <td class="table-actions">
+            <%= link_to "View", gate_entry_path(gate_entry), class: "btn btn-ghost" %>
+            <%= link_to "Edit", edit_gate_entry_path(gate_entry), class: "btn btn-ghost" %>
+            <%= link_to "Delete", gate_entry_path(gate_entry), class: "btn btn-ghost btn-danger", data: { turbo_method: :delete, turbo_confirm: "Remove this gate entry?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

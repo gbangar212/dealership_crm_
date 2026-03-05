@@ -1,0 +1,15 @@
+<% content_for :title, "Edit Role" %>
+
+<div class="page-header">
+  <div>
+    <h1>Edit Role</h1>
+    <p class="page-subtitle">Update role name.</p>
+  </div>
+  <div>
+    <%= link_to "Back to roles", roles_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="card">
+  <%= render "form", role: @role %>
+</div>

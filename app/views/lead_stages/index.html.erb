@@ -1,0 +1,37 @@
+<% content_for :title, "Lead Stages" %>
+
+<div class="page-header">
+  <div>
+    <h1>Lead Stages</h1>
+    <p class="page-subtitle">Configure the sales pipeline stages.</p>
+  </div>
+  <div>
+    <%= link_to "New Stage", new_lead_stage_path, class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Stage</th>
+        <th>Position</th>
+        <th>Status</th>
+        <th class="table-actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @lead_stages.each do |stage| %>
+        <tr>
+          <td><strong><%= stage.name %></strong></td>
+          <td><%= stage.position %></td>
+          <td><%= stage.active? ? "Active" : "Inactive" %></td>
+          <td class="table-actions">
+            <%= link_to "Edit", edit_lead_stage_path(stage), class: "btn btn-ghost" %>
+            <%= link_to "Delete", lead_stage_path(stage), class: "btn btn-ghost btn-danger", data: { turbo_method: :delete, turbo_confirm: "Remove this stage?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
